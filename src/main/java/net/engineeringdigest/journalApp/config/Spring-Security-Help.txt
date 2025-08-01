@@ -1,0 +1,32 @@
+For Spring Security-
+1.add dependency "spring-boot-starter-security"
+2.create @Configuration & @EnableWebSecurity annotated class (CustomSecurity.java) which extends "WebSecurityConfigurerAdapter"
+3. CustomSecurity class will define 3 methods-
+    a.Which endpoints to authorize
+    b.How to authenticate a user
+    c.Which Password encoder to use for encoding and decoding password
+4. Define a @Component class (UserDetailsServiceImpl.java) which implements spring built-in interface UserDetailsService.java
+
+
+-----------
+How to run app using jar commandline
+1.create jar in target folder by running cmd- mvn clean package
+2.run command to run jar-
+    a. cd target
+    b. java -jar .\journalApp-0.0.1-SNAPSHOT.jar --server.port=8090        (--property=value) if property required to change
+
+---------------------------------
+
+How to use dev yml or prod yml for package
+1. mvn clean package -D spring.profiles.active=dev      (-D flag is used to set java system Property in command line)
+
+If you're just packaging and want to skip compiling tests & running tests -
+mvn package -D maven.test.skip=true
+
+
+----------------------------------
+Logging-
+1. Spring boot internally uses Logback logging framework. you can customize it using logback.xml file in resources folder.
+    No dependency required. It comes as part of parent dependency.
+2. SLF4j (Simple Logging Facade 4 java) internally uses Logback for logging
+3. Default logging levels are info,warn,error
