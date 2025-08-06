@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,9 @@ public class RedisService {
 
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private ApplicationContext context;     //running context.getBeansOfType(RedisTemplate.class) in Evaluate expression will give
+                                            // number of beans available in context
 
     @Autowired      //constructor injection
     public RedisService(@Qualifier("redisTemplate") RedisTemplate redisTemplate) {
@@ -24,7 +28,7 @@ public class RedisService {
 
 
     //getting from redis cache
-    public <T> T get(String key, Class<T> entityClass) {
+    public <T> T get(String key, Class<T> entityClass) {        //The first T (<T>) declares the generic type.      The second T is the return type (and matches the declared generic).
         try {
             Object cacheObject = redisTemplate.opsForValue().get(key);      //get json value
 
