@@ -4,6 +4,7 @@ package net.engineeringdigest.journalApp;
 import com.mongodb.client.MongoDatabase;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
@@ -12,6 +13,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
+@EnableCaching                          //required for using @Cacheable annotation
 @SpringBootApplication
 @EnableTransactionManagement            //required for enabling @Transactional annotation ACID
 @EnableScheduling

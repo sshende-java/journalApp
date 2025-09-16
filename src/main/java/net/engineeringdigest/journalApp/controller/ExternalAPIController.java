@@ -47,4 +47,9 @@ public class ExternalAPIController {
         }
     }
 
+    @GetMapping("/cacheable")       //using annotation for redis cache
+    public ResponseEntity<?> get(){
+        return ResponseEntity.ok(weatherService.getWeather2("Delhi"));      //get weather::Delhi
+    }
+
 }

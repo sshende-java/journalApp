@@ -3,6 +3,7 @@ package net.engineeringdigest.journalApp.service;
 import net.engineeringdigest.journalApp.ExternalApi.response.WeatherResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -41,5 +42,16 @@ public class WeatherService {
         }
 
     }
+
+    //this method is specifically written to demonstrate the use of @Cacheable annotation for redis cache   redis-cli : get weather::Delhi
+    @Cacheable(value = "weather",key = "#city")
+    public WeatherResponse getWeather2(String city) {
+        String finalAPIUrl = API.replace("CITY", city).replace("API_KEY", apiKey);
+        ResponseEntity<WeatherResponse> response = restTemplate.exchange(finalAPIUrl, HttpMethod.GET, null, WeatherResponse.class);
+        WeatherResponse fetchedWeatherResponse = response.getBody();
+        System.out.println("in getWeather2 :");
+        return fetchedWeatherResponse;
+    }
+
 
 }
