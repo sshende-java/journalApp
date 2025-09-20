@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,14 +54,17 @@ public class PublicController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user) {
         try {
-            //check if user and password is correct
-            authenticationManager.authenticate(
+            //check if user and password is correct in db, if incorrect exception is thrown, behind the scenes it calls - UserDetailsService.loadUserByUsername(...)
+            Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword())
             );
+            log.info(auth.getName());
+            log.info(user.getUserName());
+            UserDetails userDetails = (UserDetails) auth.getPrincipal();        //auth.getPrincipal() contains the UserDetails loaded during authentication.
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserName());
+            log.info("******* {}",userDetails.getAuthorities().toString());
 
-            String jwt = jwtUtil.generateToken(userDetails.getUsername());
+            String jwt = jwtUtil.generateToken(userDetails.getUsername(),userDetails.getAuthorities());
             return new ResponseEntity<>(jwt, HttpStatus.OK);
 
         } catch (Exception e) {

@@ -3,13 +3,12 @@ package net.engineeringdigest.journalApp.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -17,8 +16,15 @@ public class JwtUtil {
 
     private String SECRET_KEY = "Tak+HaV*92kdL!zP#eB8v$YxN3qWrT6sQm@J0u!Ld";
 
-    public String generateToken(String username) {
+    public String generateToken(String username, Collection<? extends GrantedAuthority> authorities) {
+        // Convert GrantedAuthority to List<String>
+        List<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
         Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", roles); // 👈 Add roles to claims
+
         return createToken(claims, username);
     }
 
@@ -60,5 +66,11 @@ public class JwtUtil {
 
     private Date extractExpiration(String token) {
         return extractAllClaims(token).getExpiration();
+    }
+
+
+    public List<String> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("roles", List.class);
     }
 }
